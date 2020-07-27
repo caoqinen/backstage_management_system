@@ -74,7 +74,7 @@ export default {
     del(id) {
       // console.log(id);
       reqSpeciDel({ id: id }).then((res) => {
-        console.log(id);
+        // console.log(res);
         if (res.data.code == 200) {
           successAlert(res.data.msg);
           //   再次请求列表数据  从新渲染页面

@@ -158,7 +158,7 @@ export default {
       });
 
       this.form.attrs = JSON.stringify(arr);
-      console.log(this.form);
+      // console.log(this.form);
 
       reqSpeciEdit(this.form).then((res) => {
         if (res.data.code === 200) {

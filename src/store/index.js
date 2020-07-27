@@ -29,6 +29,8 @@ import spec from "./modules/spec"
 
 import cate from "./modules/cate"
 
+import banner from "./modules/banner"
+
 
 // 创建仓库，并暴露出去，  main.js 需要接收
 export default new Vuex.Store({
@@ -43,6 +45,7 @@ export default new Vuex.Store({
     login,
     member,
     spec,
-    cate
+    cate,
+    banner
   }
 })

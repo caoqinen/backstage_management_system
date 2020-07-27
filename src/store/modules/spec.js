@@ -37,12 +37,12 @@ const actions = {
       size: context.state.size
     }
     reqSpeciList(params).then(res => {
-      // if (res.data.list.length == 0 && context.state.page > 1) {
-      //   context.commit("changePages", context.state.page - 1);
+      if (res.data.list.length == 0 && context.state.page > 1) {
+        context.commit("changePages", context.state.page - 1);
 
-      //   context.dispatch("reqSpeciListActions");
-      //   return;
-      // }
+        context.dispatch("reqSpeciListActions");
+        return;
+      }
       context.commit("changeList", res.data.list);
     })
   },

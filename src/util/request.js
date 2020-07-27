@@ -10,6 +10,7 @@ import qs from "qs"
 axios.interceptors.response.use(res => {
   console.group("本次请求路径为=====>" + res.config.url);
   console.log(res);
+  console.groupEnd();
   return res;
 })
 
@@ -293,4 +294,62 @@ export const reqCateDel = ((params) => {
     method: "post",
     data: qs.stringify(params)
   })
+})
+
+
+
+
+
+
+// ========================轮播图-=========================
+// 轮播图添加
+export const reqBannerAdd = ((params) => {
+  var formData = new FormData();
+  for (let i in params) {
+    formData.append(i, params[i])
+  }
+  return axios({
+    url: baseUrl + "/api/banneradd",
+    method: "post",
+    data: formData
+  })
+})
+
+
+
+// 轮播图列表
+export const reqBannerList = params => axios({
+  url: baseUrl + "/api/bannerlist",
+  method: "get",
+  params
+})
+
+
+// 轮播图获取（一条）
+export const reqBannerInfo = params => axios({
+  url: baseUrl + "/api/bannerinfo",
+  method: "get",
+  params
+})
+
+
+// 轮播图修改
+export const reqBannerEdit = ((params) => {
+  var formData = new FormData();
+  for (let i in params) {
+    formData.append(i, params[i])
+  }
+  return axios({
+    url: baseUrl + "/api/banneredit",
+    method: "post",
+    data: formData
+  })
+})
+
+
+// 轮播图删除
+export const reqBannerDel = params => axios({
+  url: baseUrl + "/api/bannerdelete",
+  method: "post",
+  data: qs.stringify(params)
 })

@@ -45,6 +45,13 @@ const actions = {
       size: context.state.size
     }
     reqAdminList(params).then(res => {
+      // 判断当前数据是多少，如果为零，并且page大于1 就执行page-1
+      if (!res.data.list && context.state.page > 1) {
+        context.commit("changePage", context.state.page - 1)
+
+        // 再次调用 列表渲染
+        context.dispatch("reqAdminListActions")
+      }
       context.commit("changeList", res.data.list)
     })
   },
