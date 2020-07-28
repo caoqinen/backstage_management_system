@@ -353,3 +353,65 @@ export const reqBannerDel = params => axios({
   method: "post",
   data: qs.stringify(params)
 })
+
+
+
+// =======================商品管理=======================
+// 商品添加
+export const reqGoodsAdd = ((params) => {
+  let formData = new FormData;
+  for (let i in params) {
+    formData.append(i, params[i])
+  }
+  return axios({
+    url: baseUrl + "/api/goodsadd",
+    method: "post",
+    data: formData
+  })
+})
+
+
+// 商品总数
+export const reqGoodsCount = params => axios({
+  url: baseUrl + "/api/goodscount",
+  method: "get",
+  params
+})
+
+
+// 商品列表
+export const reqGoodsList = params => axios({
+  url: baseUrl + "/api/goodslist",
+  method: "get",
+  params
+})
+
+
+// 商品获取（一条）
+export const reqGoodsInfo = params => axios({
+  url: baseUrl + "/api/goodsinfo",
+  method: "get",
+  params
+})
+
+
+// 商品修改
+export const reqGoodsEdit = ((params) => {
+  let formData = new FormData;
+  for (let i in params) {
+    formData.append(i, params[i])
+  }
+  return axios({
+    url: baseUrl + "/api/goodsedit",
+    method: "post",
+    data: formData
+  })
+})
+
+
+// 商品删除
+export const reqGoodsDel = params => axios({
+  url: baseUrl + "/api/goodsdelete",
+  method: "post",
+  data: qs.stringify(params)
+})

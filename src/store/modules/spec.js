@@ -31,11 +31,18 @@ const mutations = {
 
 
 const actions = {
-  reqSpeciListActions(context) {
-    const params = {
-      page: context.state.page,
-      size: context.state.size
+  reqSpeciListActions(context, bool) {
+    let params = {};
+    // 如果要获取所有数据就传true
+    if (bool) {
+      params = {}
+    } else {
+      params = {
+        page: context.state.page,
+        size: context.state.size
+      }
     }
+
     reqSpeciList(params).then(res => {
       if (res.data.list.length == 0 && context.state.page > 1) {
         context.commit("changePages", context.state.page - 1);

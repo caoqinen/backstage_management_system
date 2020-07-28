@@ -2,10 +2,10 @@
   <div>
     <el-button type="primary" @click="add">添加</el-button>
     <!-- 弹窗组件 -->
-    <v-add :info="info"></v-add>
+    <v-add :info="info" ref="add"></v-add>
 
     <!-- 列表组件 -->
-    <v-list></v-list>
+    <v-list @edit="edit"></v-list>
   </div>
 </template>
 <script>
@@ -17,6 +17,8 @@ export default {
     return {
       info: {
         show: false,
+        isAdd: true,
+        title: "商品添加",
       },
     };
   },
@@ -28,6 +30,16 @@ export default {
   methods: {
     add() {
       this.info.show = true;
+      this.info.isAdd = true;
+      this.info.title = "商品添加";
+    },
+
+    // 子集传递过来的
+    edit(id) {
+      this.info.show = true;
+      this.info.isAdd = false;
+      this.info.title = "商品编辑";
+      this.$refs.add.getDetail(id);
     },
   },
   //   挂载之后

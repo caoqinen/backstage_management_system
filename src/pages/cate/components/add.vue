@@ -17,7 +17,7 @@
         <el-form-item label="分类名称" label-width="80px">
           <el-input v-model="form.catename"></el-input>
         </el-form-item>
-        <el-form-item label="图片" label-width="80px">
+        <el-form-item label="图片" label-width="80px" v-if="form.pid !== 0">
           <el-upload
             class="avatar-uploader"
             action="#"
