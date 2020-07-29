@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "element-ui": "^2.13.2",
+    "jutils-src": "^1.0.0-beta2",
     "qs": "^6.9.4",
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.2",

@@ -30,7 +30,7 @@ export default {
       reqAdminLogin(this.form).then((res) => {
         if (res.data.code === 200) {
           successAlert(res.data.msg);
-          this.changeAdmin(res.data.list.username);
+          this.changeAdmin(res.data.list);
           this.$router.push("/");
         } else {
           warningAlert(res.data.msg);

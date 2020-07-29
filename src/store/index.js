@@ -33,6 +33,8 @@ import banner from "./modules/banner"
 
 import goods from "./modules/goods"
 
+import speckill from "./modules/seckill"
+
 
 // 创建仓库，并暴露出去，  main.js 需要接收
 export default new Vuex.Store({
@@ -49,6 +51,7 @@ export default new Vuex.Store({
     spec,
     cate,
     banner,
-    goods
+    goods,
+    speckill
   }
 })

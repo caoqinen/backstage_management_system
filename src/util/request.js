@@ -1,9 +1,25 @@
 // 引入axios
 import axios from "axios"
-
-
 // 因为有post请求
 import qs from "qs"
+
+import store from "../store/index"
+//请求拦截
+// axios.interceptors.request.use(config => {
+//   if () {
+//     config.headers.authorization = store.state.user.token;
+//   }
+//   return config
+// })
+
+axios.interceptors.request.use(config => {
+  // if (config.url != ) {}
+  // console.log(config.url != baseUrl + '/api/userlogin');
+  if (config.url != baseUrl + '/api/userlogin') {
+    config.headers.authorization = store.state.login.username.token;
+  }
+  return config;
+})
 
 
 // 响应拦截
@@ -412,6 +428,47 @@ export const reqGoodsEdit = ((params) => {
 // 商品删除
 export const reqGoodsDel = params => axios({
   url: baseUrl + "/api/goodsdelete",
+  method: "post",
+  data: qs.stringify(params)
+})
+
+
+// ============================秒杀管理=======================
+// 限时秒杀添加
+export const reqSeckillAdd = params => axios({
+  url: baseUrl + "/api/seckadd",
+  method: "post",
+  data: qs.stringify(params)
+})
+
+
+// 显示秒杀列表
+export const reqSeckillList = params => axios({
+  url: baseUrl + "/api/secklist",
+  method: "get",
+  params
+})
+
+
+// .限时秒杀获取（一条）
+export const reqSeckillInfo = params => axios({
+  url: baseUrl + "/api/seckinfo",
+  method: "get",
+  params
+})
+
+
+// 限时秒杀修改
+export const reqSeckillEdit = params => axios({
+  url: baseUrl + "/api/seckedit",
+  method: "post",
+  data: qs.stringify(params)
+})
+
+
+// 限时秒杀删除
+export const reqSeckillDel = params => axios({
+  url: baseUrl + "/api/seckdelete",
   method: "post",
   data: qs.stringify(params)
 })

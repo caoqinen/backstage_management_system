@@ -19,35 +19,36 @@
             <i class="el-icon-setting"></i>
             <span slot="title">首页</span>
           </el-menu-item>
-          <el-submenu index="1">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>系统设置</span>
-            </template>
-            <el-menu-item index="/menu">菜单管理</el-menu-item>
-            <el-menu-item index="/role">角色管理</el-menu-item>
-            <el-menu-item index="/manage">管理员管理</el-menu-item>
-          </el-submenu>
-
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span>商城管理</span>
-            </template>
-            <el-menu-item index="/cate">商品分类</el-menu-item>
-            <el-menu-item index="/speci">商品规格</el-menu-item>
-            <el-menu-item index="/goods">商品管理</el-menu-item>
-            <el-menu-item index="/member">会员管理</el-menu-item>
-            <el-menu-item index="/banner">轮播图管理</el-menu-item>
-            <el-menu-item index="/seckill">秒杀活动</el-menu-item>
-          </el-submenu>
+          <template>
+            <el-submenu :index="item.id+''" v-for="item in username.menus" :key="item.id">
+              <template slot="title">
+                <i v-if="item.icon" :class="item.icon"></i>
+                <span>{{item.title}}</span>
+              </template>
+              <template v-if="item.children">
+                <el-menu-item :index="i.url" v-for="i in item.children" :key="i.id">{{i.title}}</el-menu-item>
+              </template>
+              <template v-else>
+                <el-menu-item :index="item.url">{{item.title}}</el-menu-item>
+              </template>
+            </el-submenu>
+          </template>
+          <!-- 没有目录，只有菜单 v-if="!username.menus.children"-->
+          <!-- <template v-if="!username.menus[0].children">
+            
+            <el-menu-item
+              :index="item.url"
+              v-for="item in username.menus"
+              :key="item.id"
+            >{{item.title}}</el-menu-item>
+          </template>-->
         </el-menu>
         <!-- 导航结束 -->
       </el-aside>
       <el-container>
         <el-header>
           <div class="header-con">
-            <span>{{username}}</span>
+            <span>{{username.username}}</span>
             <el-button type="primary" @click="$router.push('/login')">退出</el-button>
           </div>
         </el-header>
@@ -72,6 +73,8 @@ export default {
     ...mapGetters({
       username: "login/username",
     }),
+
+    // 判断有没有子集菜单，有就渲染，没有就直接渲染
   },
   data() {
     return {};
@@ -81,13 +84,7 @@ export default {
       reqAdminLoginActions: "login/reqAdminLoginActions",
     }),
   },
-  mounted() {
-    // this.reqAdminLoginActions({ username: "admin", password: "123" });
-    // this.timer = setInterval(() => {
-    //   console.log(this.username);
-    // }, 5000);
-    // console.log(this.username);
-  },
+  mounted() {},
 };
 </script>
 <style scoped>
