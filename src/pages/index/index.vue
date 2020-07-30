@@ -19,29 +19,20 @@
             <i class="el-icon-setting"></i>
             <span slot="title">首页</span>
           </el-menu-item>
-          <template>
-            <el-submenu :index="item.id+''" v-for="item in username.menus" :key="item.id">
+
+          <!-- template   可以用来站位  循环最外侧  -->
+          <template v-for="item in username.menus">
+            <!-- 如果 里面有children  就走这一步 -->
+            <el-submenu v-if="item.children" :index="item.id+''" :key="item.id">
               <template slot="title">
-                <i v-if="item.icon" :class="item.icon"></i>
+                <i :class="item.icon"></i>
                 <span>{{item.title}}</span>
               </template>
-              <template v-if="item.children">
-                <el-menu-item :index="i.url" v-for="i in item.children" :key="i.id">{{i.title}}</el-menu-item>
-              </template>
-              <template v-else>
-                <el-menu-item :index="item.url">{{item.title}}</el-menu-item>
-              </template>
+              <el-menu-item v-for="i in item.children" :index="i.url" :key="i.id">{{i.title}}</el-menu-item>
             </el-submenu>
+            <!-- 下面没有children 就走这一步 -->
+            <el-menu-item v-if="!item.children" :index="item.url" :key="item.id">{{item.title}}</el-menu-item>
           </template>
-          <!-- 没有目录，只有菜单 v-if="!username.menus.children"-->
-          <!-- <template v-if="!username.menus[0].children">
-            
-            <el-menu-item
-              :index="item.url"
-              v-for="item in username.menus"
-              :key="item.id"
-            >{{item.title}}</el-menu-item>
-          </template>-->
         </el-menu>
         <!-- 导航结束 -->
       </el-aside>
@@ -49,7 +40,7 @@
         <el-header>
           <div class="header-con">
             <span>{{username.username}}</span>
-            <el-button type="primary" @click="$router.push('/login')">退出</el-button>
+            <el-button type="primary" @click="tuichu">退出</el-button>
           </div>
         </el-header>
         <el-main>
@@ -58,8 +49,12 @@
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>{{$route.name}}</el-breadcrumb-item>
           </el-breadcrumb>
-          <!--路由出口 -->
-          <router-view class="pT"></router-view>
+
+          <transition enter-active-class="animate__animated animate__rotateInDownLeft">
+            <!-- animate__fadeInTopLeft -->
+            <!--路由出口 -->
+            <router-view class="pT"></router-view>
+          </transition>
         </el-main>
       </el-container>
     </el-container>
@@ -81,8 +76,13 @@ export default {
   },
   methods: {
     ...mapActions({
-      reqAdminLoginActions: "login/reqAdminLoginActions",
+      reqAdminLoginActions: "login/changeAdmin",
     }),
+
+    tuichu() {
+      this.reqAdminLoginActions(null);
+      this.$router.push("/login");
+    },
   },
   mounted() {},
 };

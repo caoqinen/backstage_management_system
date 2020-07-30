@@ -34,7 +34,7 @@ Vue.prototype.$prefixImg = "http://localhost:3000";
 import store from "./store"
 
 
-
+import "animate.css"
 
 
 /* eslint-disable no-new */

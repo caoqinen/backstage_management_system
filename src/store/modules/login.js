@@ -7,7 +7,13 @@ const mutations = {
   changeName(state, name) {
     state.username = name
     // 把数据存储在sessionStorage  
-    sessionStorage.setItem("username", JSON.stringify(state.username))
+
+
+    if (state.username) {
+      sessionStorage.setItem("username", JSON.stringify(state.username))
+    } else {
+      sessionStorage.removeItem("username")
+    }
   },
 
 }
