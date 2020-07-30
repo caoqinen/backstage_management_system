@@ -1,8 +1,8 @@
 <template>
   <div class="add">
     <el-dialog :title="info.title" :visible.sync="info.show">
-      <el-form :model="form">
-        <el-form-item label="活动名称" label-width="80px">
+      <el-form :model="form" :rules="rules" ref="form">
+        <el-form-item label="活动名称" label-width="80px" prop="title">
           <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
 
@@ -64,7 +64,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="add" v-if="info.isAdd">添 加</el-button>
+        <el-button type="primary" @click="add('form')" v-if="info.isAdd">添 加</el-button>
         <el-button type="primary" v-else @click="edit">修 改</el-button>
       </div>
     </el-dialog>
@@ -104,6 +104,13 @@ export default {
         status: "",
       },
       value1: [],
+
+      //表单验证
+      rules: {
+        title: [
+          { required: true, message: "请输入活动名称", trigger: "change" },
+        ],
+      },
     };
   },
   //   注册
@@ -148,19 +155,26 @@ export default {
     },
 
     // 点击添加
-    add() {
-      this.form.begintime = this.value1[0].getTime();
-      this.form.endtime = this.value1[1].getTime();
-      // console.log(this.form);reqSeckillList
-      reqSeckillAdd(this.form).then((res) => {
-        if (res.data.code == 200) {
-          successAlert(res.data.msg);
-          this.cancel();
-          this.empty();
-          //  渲染秒杀列表
-          this.reqSeckillListActions();
+    add(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.form.begintime = this.value1[0].getTime();
+          this.form.endtime = this.value1[1].getTime();
+          // console.log(this.form);reqSeckillList
+          reqSeckillAdd(this.form).then((res) => {
+            if (res.data.code == 200) {
+              successAlert(res.data.msg);
+              this.cancel();
+              this.empty();
+              //  渲染秒杀列表
+              this.reqSeckillListActions();
+            } else {
+              warningAlert(res.data.msg);
+            }
+          });
         } else {
-          warningAlert(res.data.msg);
+          console.log("error submit!!");
+          return false;
         }
       });
     },

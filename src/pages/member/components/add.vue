@@ -1,10 +1,10 @@
 <template>
   <el-dialog title="会员修改" :visible.sync="info.show">
-    <el-form :model="form">
-      <el-form-item label="手机号" label-width="80px">
+    <el-form :model="form" :rules="rules" ref="form">
+      <el-form-item label="手机号" label-width="80px" prop="phone">
         <el-input v-model="form.phone" auto-complete="off"></el-input>
       </el-form-item>
-      <el-form-item label="昵称" label-width="80px">
+      <el-form-item label="昵称" label-width="80px" prop="nickname">
         <el-input v-model="form.nickname" auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="密码" label-width="80px">
@@ -22,7 +22,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
-      <el-button type="primary" @click="edit">修 改</el-button>
+      <el-button type="primary" @click="edit('form')">修 改</el-button>
     </div>
   </el-dialog>
 </template>
@@ -42,6 +42,21 @@ export default {
         status: 1,
       },
       tishi: "留空则不修改",
+
+      //表单验证
+      rules: {
+        phone: [
+          { required: true, message: "请输入正确的手机号", trigger: "blur" },
+          {
+            min: 11,
+            max: 11,
+            trigger: "blur",
+          },
+        ],
+        nickname: [
+          { required: true, message: "请输入昵称", trigger: "change" },
+        ],
+      },
     };
   },
   //   注册
@@ -65,19 +80,27 @@ export default {
       this.info.show = false;
       this.empty();
     },
-    edit() {
-      //   console.log(this.form);
-      reqMemberEdit(this.form).then((res) => {
-        if (res.data.code === 200) {
-          successAlert(res.data.msg);
-          this.empty();
-          this.cancel();
-          // 请求列表数据重新渲染
-          this.reqreqMemberListActions();
+    edit(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          reqMemberEdit(this.form).then((res) => {
+            if (res.data.code === 200) {
+              successAlert(res.data.msg);
+              this.empty();
+              this.cancel();
+              // 请求列表数据重新渲染
+              this.reqreqMemberListActions();
+            } else {
+              warningAlert(res.data.msg);
+            }
+          });
         } else {
-          warningAlert(res.data.msg);
+          console.log("error submit!!");
+          return false;
         }
       });
+      //   console.log(this.form);
+
       // console.log(this.form);
     },
 

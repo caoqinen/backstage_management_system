@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="info.title" :visible.sync="info.show">
-    <el-form :model="form">
-      <el-form-item label="所属角色" label-width="80px">
+    <el-form :model="form" :rules="rules" ref="form">
+      <el-form-item label="所属角色" label-width="80px" prop="roleid">
         <el-select v-model="form.roleid">
           <el-option label="--请选择--" value disabled></el-option>
 
@@ -15,7 +15,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="用户名" label-width="80px">
+      <el-form-item label="用户名" label-width="80px" prop="username">
         <el-input type="text" v-model="form.username" clearable></el-input>
       </el-form-item>
       <el-form-item label="密码" label-width="80px">
@@ -27,7 +27,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
-      <el-button type="primary" @click="add" v-if="info.isArr">添 加</el-button>
+      <el-button type="primary" @click="add('form')" v-if="info.isArr">添 加</el-button>
       <el-button type="primary" v-else @click="update">修 改</el-button>
     </div>
   </el-dialog>
@@ -46,6 +46,14 @@ export default {
         password: "",
         roleid: "",
         status: 1,
+      },
+
+      //表单验证
+      rules: {
+        roleid: [{ required: true, message: "请选择角色", trigger: "blur" }],
+        username: [
+          { required: true, message: "请输入用户名", trigger: "change" },
+        ],
       },
     };
   },
@@ -76,27 +84,29 @@ export default {
       reqAdminCountActions: "manage/reqAdminCountActions",
     }),
     // 点击添加按钮
-    add() {
-      if (this.form.username || this.form.password) {
-        reqAdminAdd(this.form).then((res) => {
-          if (res.data.code === 200) {
-            successAlert(res.data.msg);
-            // 退出弹框
-            this.cancel();
-            // 清空form;
-            this.empty();
+    add(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          reqAdminAdd(this.form).then((res) => {
+            if (res.data.code === 200) {
+              successAlert(res.data.msg);
+              // 退出弹框
+              this.cancel();
+              // 清空form;
+              this.empty();
 
-            // 成功后再次请求数据 达到重新渲染效果
-            this.reqAdminListActions();
-            this.reqAdminCountActions();
-          } else {
-            warningAlert(res.data.msg);
-          }
-        });
-      } else {
-        alert("账号或密码不能为空!!!");
-        return;
-      }
+              // 成功后再次请求数据 达到重新渲染效果
+              this.reqAdminListActions();
+              this.reqAdminCountActions();
+            } else {
+              warningAlert(res.data.msg);
+            }
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
 
     // 获取具体的信息

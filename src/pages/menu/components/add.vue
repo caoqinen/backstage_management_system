@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-dialog :title="info.title" :visible.sync="info.show">
-      <el-form :model="form" :rules="rules" ref="ruleForm">
+      <el-form :model="form" :rules="rules" ref="form">
         <el-form-item label="菜单名称" label-width="80px" prop="title">
           <el-input v-model="form.title" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="上级菜单" label-width="80px">
+        <el-form-item label="上级菜单" label-width="80px" prop="pid">
           <el-select v-model="form.pid" placeholder="请选择">
             <el-option label="顶级菜单" :value="0"></el-option>
             <!-- 动态数据 -->
@@ -41,7 +41,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="add" v-if="info.isAdd">添 加</el-button>
+        <el-button type="primary" @click="add('form')" v-if="info.isAdd">添 加</el-button>
         <el-button type="primary" @click="update" v-else>修 改</el-button>
       </div>
     </el-dialog>
@@ -95,9 +95,10 @@ export default {
 
       rules: {
         title: [
-          { required: true, message: "请输入活动名称", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
+          { required: true, message: "请输入菜单名称", trigger: "blur" },
+          { min: 1, max: 10, message: "长度在 3 到 5 个字符", trigger: "blur" },
         ],
+        pid: [{ required: true, message: "请选择菜单图表", trigger: "change" }],
       },
     };
   },
@@ -134,26 +135,25 @@ export default {
       }
     },
     // 点击了添加按钮
-    add() {
+    add(form) {
       // console.log(form);
-      // this.$refs[form].validate((valid) => {
-      //   if (valid) {
-      //     alert("submit!");
-      //   } else {
-      //     console.log("error submit!!");
-      //     return false;
-      //   }
-      // });
-      reqMenuAdd(this.form).then((res) => {
-        if (res.data.code === 200) {
-          successAlert(res.data.msg);
-          this.cancel();
-          // 调用重置方法
-          this.empty();
-          // 再次请求列表数据
-          this.reqMenuListActions();
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          reqMenuAdd(this.form).then((res) => {
+            if (res.data.code === 200) {
+              successAlert(res.data.msg);
+              this.cancel();
+              // 调用重置方法
+              this.empty();
+              // 再次请求列表数据
+              this.reqMenuListActions();
+            } else {
+              warningAlert(res.data.msg);
+            }
+          });
         } else {
-          warningAlert(res.data.msg);
+          console.log("error submit!!");
+          return false;
         }
       });
     },

@@ -1,8 +1,8 @@
 <template>
   <div class="box">
     <el-dialog :title="info.title" :visible.sync="info.show">
-      <el-form :model="form">
-        <el-form-item label="上级分类" label-width="80px">
+      <el-form :model="form" :rules="rules" ref="form">
+        <el-form-item label="上级分类" label-width="80px" prop="pid">
           <el-select v-model="form.pid" placeholder="请选择">
             <el-option label="==请选择==" value disabled></el-option>
             <el-option label="顶级分类" :value="0"></el-option>
@@ -14,7 +14,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="分类名称" label-width="80px">
+        <el-form-item label="分类名称" label-width="80px" prop="catename">
           <el-input v-model="form.catename"></el-input>
         </el-form-item>
         <el-form-item label="图片" label-width="80px" v-if="form.pid !== 0">
@@ -34,7 +34,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="confirm" v-if="info.isAdd">确 定</el-button>
+        <el-button type="primary" @click="confirm('form')" v-if="info.isAdd">确 定</el-button>
         <el-button type="primary" v-else @click="edit">修 改</el-button>
       </div>
     </el-dialog>
@@ -58,6 +58,14 @@ export default {
       },
       dialogImageUrl: "",
       dialogVisible: false,
+
+      //表单验证
+      rules: {
+        catename: [
+          { required: true, message: "请输入分类名称", trigger: "blur" },
+        ],
+        pid: [{ required: true, message: "请选择上级分类", trigger: "change" }],
+      },
     };
   },
   //   注册
@@ -102,15 +110,22 @@ export default {
       this.form.img = file;
     },
     // 点击确定
-    confirm() {
-      reqCateAdd(this.form).then((res) => {
-        if (res.data.code === 200) {
-          successAlert(res.data.msg);
-          this.cancel();
-          this.emity();
-          this.reqCateListActions();
+    confirm(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          reqCateAdd(this.form).then((res) => {
+            if (res.data.code === 200) {
+              successAlert(res.data.msg);
+              this.cancel();
+              this.emity();
+              this.reqCateListActions();
+            } else {
+              warningAlert(res.data.msg);
+            }
+          });
         } else {
-          warningAlert(res.data.msg);
+          console.log("error submit!!");
+          return false;
         }
       });
     },

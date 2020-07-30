@@ -1,8 +1,8 @@
 <template>
   <div class="add">
     <el-dialog :title="info.title" :visible.sync="info.show" @opened="createEditor">
-      <el-form :model="form">
-        <el-form-item label="一级分类" label-width="80px">
+      <el-form :model="form" :rules="rules" ref="form">
+        <el-form-item label="一级分类" label-width="80px" prop="first_cateid">
           <el-select v-model="form.first_cateid" placeholder="请选择" @change="changeFirstCateId()">
             <el-option label="==请选择==" value disabled></el-option>
             <el-option
@@ -13,7 +13,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="二级分类" label-width="80px">
+        <el-form-item label="二级分类" label-width="80px" prop="second_cateid">
           <el-select v-model="form.second_cateid" placeholder="请选择">
             <el-option label="==请选择==" value disabled></el-option>
             <!-- 动态渲染 -->
@@ -25,7 +25,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品名称" label-width="80px">
+        <el-form-item label="商品名称" label-width="80px" prop="goodsname">
           <el-input v-model="form.goodsname"></el-input>
         </el-form-item>
         <el-form-item label="价格" label-width="80px">
@@ -82,7 +82,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="confirm" v-if="info.isAdd">确 定</el-button>
+        <el-button type="primary" @click="confirm('form')" v-if="info.isAdd">确 定</el-button>
         <el-button type="primary" @click="edit" v-else>修 改</el-button>
       </div>
     </el-dialog>
@@ -131,6 +131,19 @@ export default {
         status: 1,
         // 文本框内容
         description: "",
+      },
+
+      //表单验证
+      rules: {
+        first_cateid: [
+          { required: true, message: "请选择一级分类", trigger: "change" },
+        ],
+        second_cateid: [
+          { required: true, message: "请选择二级分类", trigger: "change" },
+        ],
+        goodsname: [
+          { required: true, message: "请输入商品名称", trigger: "change" },
+        ],
       },
     };
   },
@@ -187,23 +200,29 @@ export default {
       this.empty();
     },
     // 确定按钮
-    confirm() {
-      this.form.description = this.editor.txt.html();
-      this.form.specsattr = JSON.stringify(this.form.specsattr);
-
-      reqGoodsAdd(this.form).then((res) => {
-        if (res.data.code == 200) {
-          successAlert(res.data.msg);
-          this.cancel();
-          this.empty();
-          // 成功后再次请求列表数据
-          this.reqGoodsListActions();
-
-          this.reqGoodsCountActions();
+    confirm(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.form.description = this.editor.txt.html();
+          this.form.specsattr = JSON.stringify(this.form.specsattr);
+          reqGoodsAdd(this.form).then((res) => {
+            if (res.data.code == 200) {
+              successAlert(res.data.msg);
+              this.cancel();
+              this.empty();
+              // 成功后再次请求列表数据
+              this.reqGoodsListActions();
+              this.reqGoodsCountActions();
+            } else {
+              warningAlert(res.data.msg);
+            }
+          });
         } else {
-          warningAlert(res.data.msg);
+          console.log("error submit!!");
+          return false;
         }
       });
+
       // console.log(this.form);
     },
 

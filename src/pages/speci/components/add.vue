@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="info.title" :visible.sync="info.show">
-    <el-form :model="form">
-      <el-form-item label="规格名称" label-width="80px">
+    <el-form :model="form" :rules="rules" ref="form">
+      <el-form-item label="规格名称" label-width="80px" prop="specsname">
         <el-input v-model="form.specsname" auto-complete="off"></el-input>
       </el-form-item>
     </el-form>
@@ -34,7 +34,7 @@
 
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
-      <el-button type="primary" @click="confirm" v-if="info.isAdd">确 定</el-button>
+      <el-button type="primary" @click="confirm('form')" v-if="info.isAdd">确 定</el-button>
       <el-button type="primary" @click="edit" v-else>修 改</el-button>
     </div>
   </el-dialog>
@@ -58,6 +58,13 @@ export default {
           {
             value: "",
           },
+        ],
+      },
+
+      //表单验证
+      rules: {
+        specsname: [
+          { required: true, message: "请输入规格名称", trigger: "blur" },
         ],
       },
     };
@@ -100,25 +107,31 @@ export default {
       });
     },
     // 添加页面  点击确定按钮
-    confirm() {
-      // 声明一个空数组，用来存储 在输入框中输入的内容
-      var arr = [];
-      // 因为拿到的是数组形式，所以循环拿到每一个里面的value
-      this.dynamicValidateForm.domains.forEach((item, index) => {
-        arr.push(item.value);
-      });
-      // 因为后台要字符串字段  所以要把里面的转换成字符串
-      this.form.attrs = JSON.stringify(arr);
-
-      reqSpeciAdd(this.form).then((res) => {
-        if (res.data.code === 200) {
-          successAlert(res.data.msg);
-          this.cancel();
-          this.empty();
-          this.reqSpeciListActions();
-          this.reqSpeciCountActions();
+    confirm(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          // 声明一个空数组，用来存储 在输入框中输入的内容
+          var arr = [];
+          // 因为拿到的是数组形式，所以循环拿到每一个里面的value
+          this.dynamicValidateForm.domains.forEach((item, index) => {
+            arr.push(item.value);
+          });
+          // 因为后台要字符串字段  所以要把里面的转换成字符串
+          this.form.attrs = JSON.stringify(arr);
+          reqSpeciAdd(this.form).then((res) => {
+            if (res.data.code === 200) {
+              successAlert(res.data.msg);
+              this.cancel();
+              this.empty();
+              this.reqSpeciListActions();
+              this.reqSpeciCountActions();
+            } else {
+              warningAlert(res.data.msg);
+            }
+          });
         } else {
-          warningAlert(res.data.msg);
+          console.log("error submit!!");
+          return false;
         }
       });
     },
