@@ -5,16 +5,9 @@ import qs from "qs"
 
 import store from "../store/index"
 //请求拦截
-// axios.interceptors.request.use(config => {
-//   if () {
-//     config.headers.authorization = store.state.user.token;
-//   }
-//   return config
-// })
+
 
 axios.interceptors.request.use(config => {
-  // if (config.url != ) {}
-  // console.log(config.url != baseUrl + '/api/userlogin');
   if (config.url != baseUrl + '/api/userlogin') {
     config.headers.authorization = store.state.login.username.token;
   }
@@ -24,15 +17,15 @@ axios.interceptors.request.use(config => {
 
 // 响应拦截
 axios.interceptors.response.use(res => {
-  console.group("本次请求路径为=====>" + res.config.url);
-  console.log(res);
-  console.groupEnd();
+  // console.group("本次请求路径为=====>" + res.config.url);
+  // console.log(res);
+  // console.groupEnd();
   return res;
 })
 
 
 // 设置一个api变量，打包时要清空
-const baseUrl = "/api";
+const baseUrl = "";
 
 
 // 菜单添加

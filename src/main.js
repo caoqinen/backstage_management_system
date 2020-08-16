@@ -27,7 +27,7 @@ for (let i in filters) {
 }
 
 // 图片前缀
-Vue.prototype.$prefixImg = "http://localhost:3000";
+Vue.prototype.$prefixImg = "";
 
 
 // 引入 vuex仓库
